@@ -374,8 +374,12 @@ const TEST_MODE = TEST !== null && SONGS[+TEST] !== undefined;
 const DAY = dayNumber();
 const SONG = TEST_MODE ? SONGS[+TEST] : songForDay(DAY);
 const YTINFO = parseYouTube(SONG.youtube);
-const MODE = YTINFO ? "yt" : (SONG.file ? "file" : "none");
-const START = (SONG.start ?? (YTINFO && YTINFO.t) ?? 0);
+const START = (SONG.start ?? (YTINFO && YTINFO.t) ?? 0);   // where the song starts inside the YouTube video
+// The round plays from a short audio clip so no title can leak (media notifications, lock screen…).
+// Clip file = clips/<YouTube video ID>.mp3, already cut at the start point. Missing clip → YouTube fallback.
+const CLIP_URL = SONG.clip || SONG.file || (YTINFO ? `clips/${YTINFO.id}.mp3` : null);
+const CLIP_OFFSET = (SONG.file && !SONG.clip) ? START : (SONG.clipStart || 0);
+let MODE = "none";        // "file" = audio clip (no leaks), "yt" = YouTube fallback
 
 let state = TEST_MODE ? null : store.get("st_state", null);
 if(!state || state.day !== DAY || !Array.isArray(state.guesses) || state.guesses.length > MAX)
@@ -400,22 +404,20 @@ function resetProgress(){ cancelAnimationFrame(raf); $("prog").style.width = "0"
 
 // ===================== Source 1: audio file (Web Audio — exact clip lengths) =====================
 let ctx, buffer, src;
-async function loadFile(){
+async function loadFile(){            // returns true if the clip loaded
   try{
+    const res = await fetch(CLIP_URL, { cache: "no-cache" });
+    if(!res.ok) return false;
+    const data = await res.arrayBuffer();
     ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const res = await fetch(SONG.file);
-    if(!res.ok) throw new Error(res.status);
-    buffer = await ctx.decodeAudioData(await res.arrayBuffer());
-    ready();
-  }catch(e){
-    showError("تعذّر تحميل ملف الصوت: " + SONG.file +
-      (location.protocol === "file:" ? " — افتح الموقع عبر سيرفر (GitHub Pages أو Live Server)." : ""));
-  }
+    buffer = await ctx.decodeAudioData(data);
+    return true;
+  }catch(e){ return false; }
 }
 function fileStop(){ if(src){ try{ src.stop(); }catch(e){} src = null; } }
 function filePlay(len, onEnd){
   if(ctx.state === "suspended") ctx.resume();
-  const start = Math.min(START, Math.max(0, buffer.duration - 0.1));
+  const start = Math.min(CLIP_OFFSET, Math.max(0, buffer.duration - 0.1));
   len = Math.min(len, buffer.duration - start);
   const gain = ctx.createGain();
   const t0 = ctx.currentTime + 0.02;
@@ -434,7 +436,8 @@ function filePlay(len, onEnd){
 
 // ===================== Source 2: YouTube embed =====================
 let yt, ytReady = false, warming = false, pendingLen = 0, clipTimer, ytOnEnd;
-function loadYouTube(){
+// purpose: "game" = play clips from YouTube (fallback), "reveal" = show + play after the round, "show" = show only
+function loadYouTube(purpose){
   window.onYouTubeIframeAPIReady = () => {
     yt = new YT.Player("yt", {
       host: "https://www.youtube-nocookie.com",   // privacy-enhanced mode
@@ -442,6 +445,11 @@ function loadYouTube(){
       playerVars: { controls: 1, disablekb: 1, playsinline: 1, rel: 0, iv_load_policy: 3, fs: 0 },
       events: {
         onReady: () => {
+          if(purpose !== "game"){
+            ytReady = true;
+            try{ yt.seekTo(START, true); if(purpose === "reveal") yt.playVideo(); else yt.pauseVideo(); }catch(e){}
+            return;
+          }
           // Warm-up: buffer the start point silently so the first ▶ responds fast
           warming = true;
           yt.mute(); yt.seekTo(START, true); yt.playVideo();
@@ -449,6 +457,7 @@ function loadYouTube(){
         },
         onStateChange: e => {
           if(e.data === YT.PlayerState.PLAYING){
+            if(purpose !== "game") return;
             if(warming){ endWarmup(); return; }
             if(pendingLen){
               const L = pendingLen; pendingLen = 0;
@@ -558,8 +567,18 @@ function renderResult(){
   $("resTitle").textContent = state.won ? "أحسنت! 🎉" : "المرة الجاية إن شاء الله 💪";
   $("resAns").textContent = SONG.title;
   $("resSq").textContent = squares();
-  if(MODE === "yt") $("cover").classList.add("gone");   // show the actual video at the end
   updateNext();
+}
+// After the round: uncover and show the YouTube video (loaded only now, so nothing leaks during the round)
+let revealed = false;
+function revealVideo(autoplay){
+  if(!YTINFO) return;
+  $("cover").classList.add("gone");
+  if(MODE === "yt"){
+    if(autoplay && ytReady){ try{ yt.unMute(); yt.seekTo(START, true); yt.playVideo(); }catch(e){} }
+    return;
+  }
+  if(!revealed){ revealed = true; loadYouTube(autoplay ? "reveal" : "show"); }
 }
 function updateNext(){
   const cairo = new Date(new Date().toLocaleString("en-US",{timeZone:"Africa/Cairo"}));
@@ -628,8 +647,8 @@ function addGuess(g){
   $("inp").value = ""; picked = null;
   render();
   if(state.done){
-    // Play the song: YouTube plays on from the start with its own controls; audio files play FULL_LEN seconds
-    if(MODE === "yt" && ytReady){ try{ yt.unMute(); yt.seekTo(START, true); yt.playVideo(); }catch(e){} }
+    // Reveal: the YouTube video appears and plays; songs with only an audio file play FULL_LEN seconds
+    if(YTINFO) revealVideo(true);
     else if(MODE === "file" && buffer){ playClip(FULL_LEN); }
   }
 }
@@ -771,9 +790,13 @@ if(TEST_MODE){
 setPlayIcon(false);
 if(!TEST_MODE && !store.get("st_seen_help", false)){ $("helpM").classList.add("open"); store.set("st_seen_help", true); }
 render();
-if(MODE === "yt") loadYouTube();
-else if(MODE === "file") loadFile();
-else showError("شارة اليوم ليس لها رابط يوتيوب أو ملف صوت في songs.js: " + SONG.title);
+(async () => {
+  if(CLIP_URL && await loadFile()){ MODE = "file"; ready(); }
+  else if(YTINFO){ MODE = "yt"; loadYouTube(state.done ? "show" : "game"); }
+  else { showError("شارة اليوم ليس لها رابط يوتيوب أو ملف صوت في songs.js: " + SONG.title); return; }
+  if(state.done) revealVideo(false);
+  if(TEST_MODE) $("dayLbl").textContent += MODE === "file" ? " · 🎵 مقطع" : " · ⚠️ يوتيوب (لا يوجد مقطع)";
+})();
 setInterval(()=>{ if(state.done) updateNext(); if(dayNumber()!==DAY) location.reload(); }, 30000);
 </script>
 </body>

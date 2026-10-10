@@ -19,6 +19,22 @@ og-image.png          picture shown when the link is shared (WhatsApp, Facebook�
 robots.txt, sitemap.xml   help Google find the pages
 ```
 
+## Audio clips (no spoilers)
+During a round the game plays a short audio clip, not YouTube — YouTube's player shows the
+video title in phone notifications / the lock screen / Chrome's media button, which gives the answer away.
+The YouTube video is only loaded after the round, for the reveal.
+
+- Clips live in `clips/` and are named by YouTube video ID: `clips/WevtBmOU5qY.mp3`
+- A song with no clip still works — it falls back to YouTube (with the title leak).
+  Test mode (`?test=N`) shows 🎵 مقطع or ⚠️ يوتيوب so you can see which songs still need a clip.
+
+Making the clips (`tools/make_clips.py`):
+1. Install ffmpeg once (Windows PowerShell: `winget install ffmpeg`, then reopen PowerShell).
+2. Put each intro's full audio/video in `tools/source/`, named by its sheet number: `0.mp3`, `22.m4a` …
+3. Run `python tools/make_clips.py` from the project folder → it writes 10-second clips into `clips/`,
+   starting at each song's `start` time, with titles stripped from the files.
+4. Upload the `clips` folder. Do NOT upload `tools/source` (big files, not needed online).
+
 ## Moving to your own domain later
 These files contain the full address `https://islam-salem.github.io/awelnaghma/` —
 replace it with the new address in all of them:
