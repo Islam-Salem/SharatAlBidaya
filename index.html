@@ -279,12 +279,9 @@
 </div></div>
 
 <div class="modal" id="iosM"><div class="box">
-  <h3>ثبّتها على الآيفون</h3>
-  <ul class="ios-steps">
-    <li><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#14121f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></div><div>اضغط زر <b>المشاركة</b> أسفل الشاشة في Safari</div></li>
-    <li><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#14121f" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></div><div>اختر <b>«إضافة إلى الشاشة الرئيسية»</b></div></li>
-    <li><div class="ic"><img src="icon-192.png" alt="" style="width:30px;height:30px"></div><div>اضغط <b>«إضافة»</b> — وهتلاقي اللعبة على شاشتك!</div></li>
-  </ul>
+  <h3 id="gTitle">ثبّت اللعبة</h3>
+  <p id="gNote" style="display:none;margin:0 0 14px;font-weight:800;background:#fff4c2;border:2px solid #14121f;border-radius:12px;padding:10px 12px"></p>
+  <ul class="ios-steps" id="gSteps"></ul>
   <button class="btn primary press" style="width:100%" data-close>تمام</button>
 </div></div>
 
@@ -703,28 +700,65 @@ if(TEST_MODE){
 // ===================== Install as app =====================
 (function(){
   const box = $("installBox");
+  const ua = navigator.userAgent;
   const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/i.test(ua);
+  const inApp = /FBAN|FBAV|FB_IAB|Instagram|Line\/|Snapchat|TikTok|musical_ly|; wv\)/i.test(ua);   // apps' built-in browsers
+  const isIOSSafari = isIOS && /safari/i.test(ua) && !/crios|fxios|edgios|gsa\//i.test(ua) && !inApp;
   const dismissed = store.get("st_install_x", 0) > Date.now();
   let deferred = null;
+
   if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
   if(standalone || TEST_MODE) return;
-  // Android / Chrome: the browser tells us when installing is possible
+
+  // Show the box on every phone; on desktop only when the browser offers installing
+  if((isIOS || isAndroid) && !dismissed) box.classList.add("show");
   window.addEventListener("beforeinstallprompt", e => {
     e.preventDefault(); deferred = e;
     if(!dismissed) box.classList.add("show");
   });
   window.addEventListener("appinstalled", () => { box.classList.remove("show"); toast("تم التثبيت 🎉"); });
-  // iPhone: no install prompt exists — show the box with a how-to guide instead
-  if(isIOS && !dismissed) box.classList.add("show");
+
+  const ICON = {
+    share:'<svg viewBox="0 0 24 24" fill="none" stroke="#14121f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>',
+    plus:'<svg viewBox="0 0 24 24" fill="none" stroke="#14121f" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>',
+    dots:'<svg viewBox="0 0 24 24" fill="#14121f"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg>',
+    globe:'<svg viewBox="0 0 24 24" fill="none" stroke="#14121f" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>',
+    app:'<img src="icon-192.png" alt="" style="width:30px;height:30px">'
+  };
+  function guide(title, note, steps){
+    $("gTitle").textContent = title;
+    $("gNote").style.display = note ? "block" : "none";
+    $("gNote").textContent = note || "";
+    $("gSteps").innerHTML = steps.map(([ic, html]) => `<li><div class="ic">${ICON[ic]}</div><div>${html}</div></li>`).join("");
+    $("iosM").classList.add("open");
+  }
+
   $("installBtn").onclick = async () => {
-    if(deferred){
+    if(deferred){                                   // Android/Chrome direct install
       deferred.prompt();
       const r = await deferred.userChoice.catch(()=>null);
       deferred = null;
       if(r && r.outcome === "accepted") box.classList.remove("show");
+      return;
+    }
+    if(inApp || (isIOS && !isIOSSafari)){
+      guide("افتح اللعبة في المتصفح",
+        isIOS ? "التثبيت على الآيفون يعمل من Safari فقط." : "التطبيقات زي فيسبوك وإنستجرام لا تسمح بالتثبيت من داخلها.",
+        [["dots", "اضغط زر <b>القائمة</b> (⋯ أو ⋮) في أعلى أو أسفل الشاشة"],
+         ["globe", isIOS ? "اختر <b>«فتح في Safari»</b>" : "اختر <b>«فتح في Chrome»</b> أو «فتح في المتصفح»"],
+         ["app", "ثم اضغط «تثبيت» مرة أخرى من هناك"]]);
     } else if(isIOS){
-      $("iosM").classList.add("open");
+      guide("ثبّتها على الآيفون", "",
+        [["share", "اضغط زر <b>المشاركة</b> في شريط Safari"],
+         ["plus", "اختر <b>«إضافة إلى الشاشة الرئيسية»</b>"],
+         ["app", "اضغط <b>«إضافة»</b> — وهتلاقي اللعبة على شاشتك!"]]);
+    } else {
+      guide("ثبّتها على موبايلك", "",
+        [["dots", "اضغط زر <b>القائمة ⋮</b> أعلى الشاشة في Chrome"],
+         ["plus", "اختر <b>«تثبيت التطبيق»</b> أو <b>«إضافة إلى الشاشة الرئيسية»</b>"],
+         ["app", "اضغط <b>«تثبيت»</b> — وهتلاقي اللعبة على شاشتك!"]]);
     }
   };
   $("installX").onclick = () => {          // hide for 14 days
