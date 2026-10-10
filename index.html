@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>من أول نغمة — أغاني سبيستون</title>
+<meta name="description" content="تعرف أغنية سبيستون من أول نغمة؟ أغنية جديدة كل يوم.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ===== Theme — change --bg to recolor the whole page ===== */
+  :root{
+    --bg:#7cc6fe;            /* page background */
+    --ink:#111;              /* outlines, text, shadows */
+    --paper:#ffffff;         /* cards */
+    --soft:rgba(255,255,255,.55); /* empty rows */
+    --muted:#444;
+    --accent:#ff3d7f;        /* play button, title, answer */
+    --accent2:#7b5cff;       /* submit button, screen cover */
+    --ok:#2ec27e; --okbg:#9ff0c3;
+    --bad:#ff3d3d; --badbg:#ffb3b3;
+    --skipbg:#e3e3e3;
+    --hl:#ffe3ec;            /* hover / unlocked part of bar */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Tajawal",system-ui,sans-serif; color:var(--ink); min-height:100vh;
+    background:radial-gradient(circle,rgba(0,0,0,.08) 1.5px,transparent 1.6px) 0 0/18px 18px,var(--bg);
+  }
+  .wrap{max-width:480px;margin:0 auto;padding:16px 16px 40px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+  h1{font-family:"Lalezar",sans-serif;font-weight:400;font-size:38px;margin:0;line-height:1.2;text-shadow:3px 3px 0 #fff}
+  h1 span{color:var(--accent)}
+  .sub{font-size:15px;font-weight:700;margin:0 0 14px;text-align:center}
+  .iconbtn{background:var(--paper);border:3px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink);
+    color:var(--ink);width:42px;height:42px;font-size:18px;cursor:pointer}
+  .iconbtn:active,.btn:active,.playbtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+  /* attempts */
+  .rows{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+  .row{height:42px;border-radius:12px;border:3px solid var(--ink);background:var(--soft);
+       display:flex;align-items:center;gap:8px;padding:0 12px;font-size:16px;font-weight:800}
+  .row.cur{background:var(--paper);box-shadow:4px 4px 0 var(--ink)}
+  .row.bad{background:var(--badbg)}
+  .row.skip{background:var(--skipbg);color:#555}
+  .row.ok{background:var(--okbg)}
+  .row .t{margin-inline-start:auto;font-size:12px;color:#555;font-weight:700}
+
+  /* player card */
+  .player{background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:16px;margin-bottom:16px}
+  .bar{position:relative;height:16px;border-radius:8px;border:2px solid var(--ink);background:var(--soft);overflow:hidden;margin-bottom:6px}
+  .bar .unlocked{position:absolute;inset-block:0;right:0;background:var(--hl)}
+  .bar .prog{position:absolute;inset-block:0;right:0;width:0;background:var(--accent)}
+  .ticks{position:relative;height:16px;font-size:11px;font-weight:700;margin-bottom:12px}
+  .ticks span{position:absolute;transform:translateX(50%)}
+
+  /* screen: holds the YouTube video, covered until the round ends */
+  .screen{position:relative;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:#000}
+  .screen iframe,#yt{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    background:radial-gradient(circle,rgba(255,255,255,.18) 1.5px,transparent 1.6px) 0 0/16px 16px,var(--accent2);z-index:2}
+  .cover.gone{display:none}
+  .playbtn{width:72px;height:72px;border-radius:50%;cursor:pointer;
+    background:var(--accent);color:#fff;font-size:28px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+  .playbtn:disabled{opacity:.6;cursor:wait}
+  .cliplen{font-weight:800;font-size:14px;color:#fff;background:var(--ink);padding:3px 12px;border-radius:20px}
+
+  /* guess */
+  .guess{position:relative}
+  .guess input{width:100%;font:inherit;font-size:16px;font-weight:700;padding:12px 14px;border-radius:12px;
+    border:3px solid var(--ink);background:var(--paper);color:var(--ink);outline:none;box-shadow:4px 4px 0 var(--ink)}
+  .guess input:focus{border-color:var(--accent)}
+  .list{position:absolute;bottom:calc(100% + 8px);inset-inline:0;max-height:240px;overflow:auto;
+    background:var(--paper);border:3px solid var(--ink);border-radius:12px;display:none;z-index:5;box-shadow:4px 4px 0 var(--ink)}
+  .list div{padding:10px 14px;cursor:pointer;font-weight:700;border-bottom:2px solid #eee}
+  .list div:last-child{border-bottom:none}
+  .list div:hover,.list div.hl{background:var(--hl)}
+  .actions{display:flex;gap:10px;margin-top:14px}
+  .btn{flex:1;font:inherit;font-weight:800;font-size:16px;padding:11px;border-radius:12px;cursor:pointer;
+    border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+  .btn.skipb{background:var(--paper);color:var(--ink)}
+  .btn.sub{background:var(--accent2);color:#fff}
+
+  /* result */
+  .result{display:none;text-align:center;background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:18px}
+  .result h2{margin:0 0 4px;font-size:24px;font-weight:800}
+  .result .ans{font-family:"Lalezar",sans-serif;font-size:36px;color:var(--accent);margin:4px 0 6px}
+  .result .squares{font-size:22px;letter-spacing:2px;margin:10px 0 14px}
+  .result .next{color:var(--muted);font-size:14px;font-weight:700;margin-top:12px}
+  .btn.share{background:var(--ok);color:var(--ink);flex:none;padding:11px 28px}
+
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+  .modal.open{display:flex}
+  .box{background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:20px;max-width:400px;width:100%}
+  .box h3{margin:0 0 10px;font-family:"Lalezar",sans-serif;font-weight:400;font-size:26px}
+  .box p,.box li{color:#333;font-size:16px;line-height:1.7}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;margin:10px 0}
+  .stats b{display:block;font-size:26px}
+  .stats span{font-size:12px;color:var(--muted);font-weight:700}
+  .dist div{display:flex;align-items:center;gap:6px;margin:5px 0;font-size:13px;font-weight:700}
+  .dist i{display:block;height:20px;background:var(--accent);color:#fff;border:2px solid var(--ink);border-radius:6px;min-width:22px;
+          font-style:normal;padding:0 6px;text-align:left;line-height:16px}
+  .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
+    padding:8px 16px;border-radius:10px;font-weight:700;display:none;z-index:30}
+  .err{background:var(--badbg);border:3px solid var(--ink);border-radius:12px;padding:10px;margin-bottom:12px;display:none;font-size:14px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button class="iconbtn" id="helpBtn" aria-label="طريقة اللعب">؟</button>
+    <h1>من أول <span>نغمة</span></h1>
+    <button class="iconbtn" id="statsBtn" aria-label="الإحصائيات">📊</button>
+  </header>
+  <p class="sub">تعرف أغنية سبيستون من أول نغمة؟ <span id="dayLbl"></span></p>
+
+  <div class="err" id="err"></div>
+  <div class="rows" id="rows"></div>
+
+  <div class="player">
+    <div class="bar"><div class="unlocked" id="unlocked"></div><div class="prog" id="prog"></div></div>
+    <div class="ticks" id="ticks"></div>
+    <div class="screen">
+      <div id="yt"></div>
+      <div class="cover" id="cover">
+        <button class="playbtn" id="playBtn" disabled aria-label="تشغيل">▶</button>
+        <div class="cliplen" id="clipLen">جاري التحميل…</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="playArea">
+    <div class="guess">
+      <div class="list" id="list"></div>
+      <input id="inp" placeholder="اكتب اسم المسلسل…" autocomplete="off">
+    </div>
+    <div class="actions">
+      <button class="btn skipb" id="skipBtn">تخطي</button>
+      <button class="btn sub" id="subBtn">إجابة</button>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <h2 id="resTitle"></h2>
+    <div>الإجابة:</div>
+    <div class="ans" id="resAns"></div>
+    <div class="squares" id="resSq"></div>
+    <button class="btn share" id="shareBtn">مشاركة النتيجة</button>
+    <div class="next" id="nextLbl"></div>
+  </div>
+</div>
+
+<div class="modal" id="helpM"><div class="box">
+  <h3>طريقة اللعب</h3>
+  <ul>
+    <li>اضغط ▶ واسمع أول جزء من أغنية سبيستون.</li>
+    <li>اكتب اسم المسلسل واختره من القائمة.</li>
+    <li>كل إجابة خاطئة أو تخطي يفتح لك جزءًا أطول من الأغنية.</li>
+    <li>عندك 6 محاولات. أغنية جديدة كل يوم!</li>
+  </ul>
+  <button class="btn sub" style="width:100%" data-close>يلا نبدأ</button>
+</div></div>
+
+<div class="modal" id="statsM"><div class="box">
+  <h3>إحصائياتك</h3>
+  <div class="stats" id="statsGrid"></div>
+  <div class="dist" id="dist"></div>
+  <button class="btn skipb" style="width:100%;margin-top:12px" data-close>إغلاق</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="songs.js"></script>
+<script>
+// ===================== Settings =====================
+const START_DATE = "2026-10-11";               // day #1 (Cairo date)
+const CLIPS = [0.1, 0.5, 1, 2, 4, 8];          // seconds unlocked per attempt
+const FULL_LEN = 20;                           // seconds played after the game ends (audio-file songs)
+const SHUFFLE_SEED = 7;                        // change once to re-shuffle (before launch only)
+const GAME_NAME = "من أول نغمة";
+const SITE_URL = location.origin + location.pathname;
+const MAX = CLIPS.length;
+
+// ===================== Helpers =====================
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.style.display="block"; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display="none",1800); }
+function showError(msg){ const e=$("err"); e.style.display="block"; e.textContent=msg; $("clipLen").textContent="—"; }
+
+// Arabic-friendly normaliser: removes tashkeel/tatweel, unifies alef/yaa/taa marbuta, lowercases English
+function norm(s){
+  return (s||"").toLowerCase()
+    .replace(/[ً-ْـ]/g,"")
+    .replace(/[أإآٱ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").replace(/ؤ/g,"و").replace(/ئ/g,"ي")
+    .replace(/^ال/,"").replace(/\sال/g," ")
+    .replace(/[^\p{L}\p{N} ]/gu,"").replace(/\s+/g," ").trim();
+}
+
+// Today's date in Cairo time (same puzzle for everyone in Egypt)
+function cairoToday(){ return new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Cairo"}).format(new Date()); }
+function dayNumber(){
+  const toUTC = s => { const [y,m,d] = s.split("-").map(Number); return Date.UTC(y, m-1, d); };
+  return Math.max(1, Math.floor((toUTC(cairoToday()) - toUTC(START_DATE)) / 86400000) + 1);
+}
+
+// Deterministic shuffle in fixed blocks of 10, so songs added at the end don't change upcoming days
+function seededOrder(n, seed){
+  let s = seed >>> 0;
+  const rnd = () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
+  const idx = [...Array(n).keys()];
+  for(let i=n-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [idx[i],idx[j]]=[idx[j],idx[i]]; }
+  return idx;
+}
+function songForDay(d){
+  const BLOCK = 10;
+  const i = (d-1) % SONGS.length;
+  const blockStart = Math.floor(i/BLOCK)*BLOCK;
+  const blockLen = Math.min(BLOCK, SONGS.length - blockStart);
+  const order = seededOrder(blockLen, SHUFFLE_SEED + blockStart);
+  return SONGS[blockStart + order[i - blockStart]];
+}
+
+// Accepts a YouTube link (watch, youtu.be, shorts, embed) or a bare 11-character ID
+function parseYouTube(v){
+  if(!v) return null;
+  v = String(v).trim();
+  const m = v.match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([\w-]{11})/);
+  const id = m ? m[1] : (/^[\w-]{11}$/.test(v) ? v : null);
+  if(!id) return null;
+  const t = v.match(/[?&](?:t|start)=(\d+)/);
+  return { id, t: t ? +t[1] : null };
+}
+
+// ===================== State =====================
+// Test mode: add ?test=5 to the address to play SONGS[5] (nothing is saved — for tuning start times)
+const TEST = new URLSearchParams(location.search).get("test");
+const TEST_MODE = TEST !== null && SONGS[+TEST] !== undefined;
+const DAY = dayNumber();
+const SONG = TEST_MODE ? SONGS[+TEST] : songForDay(DAY);
+const YTINFO = parseYouTube(SONG.youtube);
+const MODE = YTINFO ? "yt" : (SONG.file ? "file" : "none");
+const START = (SONG.start ?? (YTINFO && YTINFO.t) ?? 0);
+
+let state = TEST_MODE ? null : store.get("st_state", null);
+if(!state || state.day !== DAY) state = { day: DAY, guesses: [], done: false, won: false };
+function saveState(){ if(!TEST_MODE) store.set("st_state", state); }
+// guesses: [{type:"skip"} | {type:"bad", text} | {type:"ok", text}]
+
+// ===================== Progress bar =====================
+let raf, progStart = 0, progLen = 0;
+function startProgress(len){
+  progStart = performance.now(); progLen = len;
+  cancelAnimationFrame(raf);
+  const total = CLIPS[MAX-1];
+  const tick = () => {
+    const el = (performance.now() - progStart) / 1000;
+    $("prog").style.width = Math.min(100, Math.min(el, progLen) / total * 100) + "%";
+    if(el < progLen) raf = requestAnimationFrame(tick);
+  };
+  tick();
+}
+function resetProgress(){ cancelAnimationFrame(raf); $("prog").style.width = "0"; }
+
+// ===================== Source 1: audio file (Web Audio — exact clip lengths) =====================
+let ctx, buffer, src;
+async function loadFile(){
+  try{
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const res = await fetch(SONG.file);
+    if(!res.ok) throw new Error(res.status);
+    buffer = await ctx.decodeAudioData(await res.arrayBuffer());
+    ready();
+  }catch(e){
+    showError("تعذّر تحميل ملف الصوت: " + SONG.file +
+      (location.protocol === "file:" ? " — افتح الموقع عبر سيرفر (GitHub Pages أو Live Server)." : ""));
+  }
+}
+function fileStop(){ if(src){ try{ src.stop(); }catch(e){} src = null; } }
+function filePlay(len, onEnd){
+  if(ctx.state === "suspended") ctx.resume();
+  const start = Math.min(START, Math.max(0, buffer.duration - 0.1));
+  len = Math.min(len, buffer.duration - start);
+  const gain = ctx.createGain();
+  const t0 = ctx.currentTime + 0.02;
+  const fade = Math.min(0.01, len/4);            // tiny fade so very short clips don't "click"
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(1, t0 + fade);
+  gain.gain.setValueAtTime(1, t0 + len - fade);
+  gain.gain.linearRampToValueAtTime(0, t0 + len);
+  src = ctx.createBufferSource();
+  src.buffer = buffer;
+  src.connect(gain).connect(ctx.destination);
+  src.start(t0, start, len);
+  startProgress(len);
+  src.onended = () => { src = null; onEnd(); };
+}
+
+// ===================== Source 2: YouTube embed =====================
+let yt, ytReady = false, warming = false, pendingLen = 0, clipTimer, ytOnEnd;
+function loadYouTube(){
+  window.onYouTubeIframeAPIReady = () => {
+    yt = new YT.Player("yt", {
+      videoId: YTINFO.id,
+      playerVars: { controls: 1, disablekb: 1, playsinline: 1, rel: 0, iv_load_policy: 3, fs: 0 },
+      events: {
+        onReady: () => {
+          // Warm-up: buffer the start point silently so the first ▶ responds fast
+          warming = true;
+          yt.mute(); yt.seekTo(START, true); yt.playVideo();
+          setTimeout(() => { if(warming) endWarmup(); }, 3000); // autoplay blocked (e.g. iPhone) — continue anyway
+        },
+        onStateChange: e => {
+          if(e.data === YT.PlayerState.PLAYING){
+            if(warming){ endWarmup(); return; }
+            if(pendingLen){
+              const L = pendingLen; pendingLen = 0;
+              startProgress(L);
+              clearTimeout(clipTimer);
+              clipTimer = setTimeout(() => { ytStop(); if(ytOnEnd) ytOnEnd(); }, L * 1000);
+            }
+          }
+        },
+        onError: e => {
+          const why = { 2:"رابط غير صحيح", 5:"خطأ في المشغّل", 100:"الفيديو محذوف أو خاص", 101:"صاحب الفيديو منع التضمين", 150:"صاحب الفيديو منع التضمين" }[e.data] || ("خطأ " + e.data);
+          showError("تعذّر تشغيل فيديو اليوم (" + why + "). " + SONG.youtube);
+        }
+      }
+    });
+  };
+  const s = document.createElement("script");
+  s.src = "https://www.youtube.com/iframe_api";
+  s.onerror = () => showError("تعذّر الاتصال بيوتيوب.");
+  document.head.appendChild(s);
+}
+function endWarmup(){
+  warming = false;
+  try{ yt.pauseVideo(); yt.seekTo(START, true); yt.unMute(); yt.setVolume(100); }catch(e){}
+  if(!ytReady){ ytReady = true; ready(); }
+}
+function ytStop(){
+  clearTimeout(clipTimer); pendingLen = 0;
+  try{ yt.pauseVideo(); yt.seekTo(START, true); }catch(e){}
+}
+function ytPlay(len, onEnd){
+  ytOnEnd = onEnd; pendingLen = len;
+  yt.unMute(); yt.seekTo(START, true); yt.playVideo();
+}
+
+// ===================== Unified player =====================
+let playing = false;
+function ready(){ $("playBtn").disabled = false; renderClipLabel(); }
+function stopClip(){
+  if(MODE === "yt") ytStop(); else fileStop();
+  playing = false; resetProgress(); $("playBtn").textContent = "▶";
+}
+function playClip(len){
+  if(playing){ stopClip(); return; }   // tap again = stop
+  playing = true; $("playBtn").textContent = "■";
+  const onEnd = () => { playing = false; resetProgress(); $("playBtn").textContent = "▶"; };
+  if(MODE === "yt") ytPlay(len, onEnd); else filePlay(len, onEnd);
+}
+
+// ===================== UI =====================
+function curClip(){ return CLIPS[Math.min(state.guesses.length, MAX-1)]; }
+
+function renderRows(){
+  const rows = $("rows"); rows.innerHTML = "";
+  for(let i=0;i<MAX;i++){
+    const g = state.guesses[i];
+    const d = document.createElement("div");
+    d.className = "row";
+    if(g){
+      d.classList.add(g.type);
+      d.textContent = g.type === "skip" ? "تم التخطي" : (g.type==="bad" ? "✗ " : "✓ ") + g.text;
+    } else if(i === state.guesses.length && !state.done){
+      d.classList.add("cur");
+    }
+    const t = document.createElement("span"); t.className = "t"; t.textContent = CLIPS[i] + " ث";
+    d.appendChild(t);
+    rows.appendChild(d);
+  }
+}
+function renderTicks(){
+  const max = CLIPS[MAX-1], el = $("ticks"); el.innerHTML = "";
+  CLIPS.forEach(c => { if(c < 1) return; const s=document.createElement("span"); s.style.right = (c/max*100)+"%"; s.textContent = c; el.appendChild(s); });
+  $("unlocked").style.width = (state.done ? 100 : curClip()/max*100) + "%";
+}
+function renderClipLabel(){
+  if(state.done){
+    $("clipLen").textContent = "اسمع الأغنية";
+    return;
+  }
+  $("clipLen").textContent = "مسموح لك: " + curClip() + " ثانية";
+  const next = CLIPS[state.guesses.length+1];
+  $("skipBtn").textContent = next ? `تخطي (+${+(next - curClip()).toFixed(1)}ث)` : "استسلام";
+}
+function squares(){
+  return Array.from({length:MAX},(_,i)=>{
+    const g = state.guesses[i];
+    return !g ? "⬜" : g.type==="ok" ? "🟩" : g.type==="skip" ? "⬛" : "🟥";
+  }).join("");
+}
+function revealVideo(){
+  if(MODE === "yt") $("cover").classList.add("gone");   // show the actual video at the end
+}
+function renderResult(){
+  $("playArea").style.display = "none";
+  $("result").style.display = "block";
+  $("resTitle").textContent = state.won ? "أحسنت! 🎉" : "للأسف! المرة الجاية 💪";
+  $("resAns").textContent = SONG.title;
+  $("resSq").textContent = squares();
+  revealVideo();
+  updateNext();
+}
+function updateNext(){
+  const cairo = new Date(new Date().toLocaleString("en-US",{timeZone:"Africa/Cairo"}));
+  const mid = new Date(cairo); mid.setHours(24,0,0,0);
+  const ms = mid - cairo;
+  const h = Math.floor(ms/3.6e6), m = Math.floor(ms%3.6e6/6e4);
+  $("nextLbl").textContent = `الأغنية الجاية بعد ${h} ساعة و ${m} دقيقة`;
+}
+function render(){
+  $("dayLbl").textContent = TEST_MODE ? `🔧 تجربة: أغنية ${TEST} (start = ${START})` : "#" + DAY;
+  renderRows(); renderTicks(); renderClipLabel();
+  if(state.done) renderResult();
+}
+
+// ===================== Guess input =====================
+// Guess list = all songs + extra titles (no duplicates)
+const OPTIONS = [];
+[...SONGS, ...(typeof EXTRA_TITLES !== "undefined" ? EXTRA_TITLES : [])].forEach(s => {
+  if(!s.title || OPTIONS.some(o => o.title === s.title)) return;
+  OPTIONS.push({ title: s.title, keys: [s.title, ...(s.aliases||[])].map(norm) });
+});
+let picked = null, hl = -1;
+function showList(){
+  const q = norm($("inp").value), list = $("list");
+  picked = null; hl = -1;
+  if(!q){ list.style.display="none"; return; }
+  const used = new Set(state.guesses.filter(g=>g.text).map(g=>g.text));
+  const m = OPTIONS.filter(o => !used.has(o.title) && o.keys.some(k => k.includes(q))).slice(0,8);
+  list.innerHTML = "";
+  m.forEach(o => {
+    const d = document.createElement("div");
+    d.textContent = o.title;
+    d.onmousedown = e => { e.preventDefault(); choose(o.title); };
+    list.appendChild(d);
+  });
+  list.style.display = m.length ? "block" : "none";
+}
+function choose(title){ $("inp").value = title; picked = title; $("list").style.display = "none"; }
+$("inp").addEventListener("input", showList);
+$("inp").addEventListener("keydown", e => {
+  const items = [...$("list").children];
+  if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+    if(!items.length) return; e.preventDefault();
+    hl = (hl + (e.key==="ArrowDown"?1:-1) + items.length) % items.length;
+    items.forEach((d,i)=>d.classList.toggle("hl",i===hl));
+  } else if(e.key==="Enter"){
+    e.preventDefault();
+    if(hl>=0 && items[hl]) choose(items[hl].textContent);
+    else if(items.length===1) choose(items[0].textContent);
+    else submit();
+  }
+});
+$("inp").addEventListener("blur", ()=> setTimeout(()=>$("list").style.display="none",100));
+
+// ===================== Game flow =====================
+function addGuess(g){
+  if(playing) stopClip();
+  state.guesses.push(g);
+  if(g.type==="ok"){ state.done = true; state.won = true; }
+  else if(state.guesses.length >= MAX){ state.done = true; state.won = false; }
+  saveState();
+  if(state.done && !TEST_MODE) saveStats();
+  $("inp").value = ""; picked = null;
+  render();
+  if(state.done){
+    // Play the song: YouTube plays on from the start with its own controls; audio files play FULL_LEN seconds
+    if(MODE === "yt" && ytReady){ try{ yt.unMute(); yt.seekTo(START, true); yt.playVideo(); }catch(e){} }
+    else if(MODE === "file" && buffer){ playClip(FULL_LEN); }
+  }
+}
+function submit(){
+  if(state.done) return;
+  const val = picked || OPTIONS.find(o => o.keys.includes(norm($("inp").value)))?.title;
+  if(!val){ toast("اختار الاسم من القائمة"); return; }
+  addGuess({ type: val === SONG.title ? "ok" : "bad", text: val });
+  if(val !== SONG.title && !state.done) toast("غلط! اسمع جزء أطول");
+}
+$("subBtn").onclick = submit;
+$("skipBtn").onclick = () => { if(!state.done) addGuess({type:"skip"}); };
+$("playBtn").onclick = () => playClip(state.done ? FULL_LEN : curClip());
+
+// ===================== Stats =====================
+function saveStats(){
+  const st = store.get("st_stats", {played:0,wins:0,streak:0,best:0,dist:Array(MAX+1).fill(0),last:0});
+  if(st.last === DAY) return;
+  st.played++;
+  if(state.won){
+    st.wins++; st.dist[state.guesses.length-1]++;
+    st.streak = (st.last === DAY-1) ? st.streak+1 : 1;
+    st.best = Math.max(st.best, st.streak);
+  } else { st.streak = 0; st.dist[MAX]++; }
+  st.last = DAY;
+  store.set("st_stats", st);
+}
+function showStats(){
+  const st = store.get("st_stats", {played:0,wins:0,streak:0,best:0,dist:Array(MAX+1).fill(0)});
+  const pct = st.played ? Math.round(st.wins/st.played*100) : 0;
+  $("statsGrid").innerHTML =
+    `<div><b>${st.played}</b><span>لعبت</span></div><div><b>${pct}%</b><span>فوز</span></div>
+     <div><b>${st.streak}</b><span>السلسلة</span></div><div><b>${st.best}</b><span>أفضل سلسلة</span></div>`;
+  const mx = Math.max(1,...st.dist);
+  $("dist").innerHTML = st.dist.map((n,i)=>
+    `<div><span style="width:40px">${i<MAX? CLIPS[i]+"ث" : "✗"}</span><i style="width:${n/mx*80+5}%">${n}</i></div>`).join("");
+  $("statsM").classList.add("open");
+}
+$("statsBtn").onclick = showStats;
+$("helpBtn").onclick = () => $("helpM").classList.add("open");
+document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest(".modal").classList.remove("open"));
+document.querySelectorAll(".modal").forEach(m => m.onclick = e => { if(e.target===m) m.classList.remove("open"); });
+
+// ===================== Share =====================
+$("shareBtn").onclick = async () => {
+  const score = state.won ? CLIPS[state.guesses.length-1] + " ث" : "✗";
+  const text = `🎵 ${GAME_NAME} #${DAY}\n${squares()}  ${score}\n${SITE_URL}`;
+  try{
+    if(navigator.share){ await navigator.share({text}); return; }
+    await navigator.clipboard.writeText(text); toast("تم نسخ النتيجة");
+  }catch(e){ try{ await navigator.clipboard.writeText(text); toast("تم نسخ النتيجة"); }catch(_){} }
+};
+
+// ===================== Start =====================
+if(!store.get("st_seen_help", false)){ $("helpM").classList.add("open"); store.set("st_seen_help", true); }
+render();
+if(MODE === "yt") loadYouTube();
+else if(MODE === "file") loadFile();
+else showError("أغنية اليوم ليس لها رابط يوتيوب أو ملف صوت في songs.js: " + SONG.title);
+setInterval(()=>{ if(state.done) updateNext(); if(dayNumber()!==DAY) location.reload(); }, 30000);
+</script>
+</body>
+</html>
