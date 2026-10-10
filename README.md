@@ -1,4 +1,4 @@
-# من أول نغمة — Spacetoon Songless
+# شارة البداية — Spacetoon Songless
 
 Daily "name the song from the first notes" game for Spacetoon intros.
 Clips unlock at 1 → 2 → 4 → 6 → 8 seconds (5 tries). Wrong guess or skip = longer clip.

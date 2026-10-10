@@ -3,171 +3,227 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>من أول نغمة — أغاني سبيستون</title>
-<meta name="description" content="تعرف أغنية سبيستون من أول نغمة؟ أغنية جديدة كل يوم.">
+<title>شارة البداية — شارات سبيستون</title>
+<meta name="description" content="تعرف شارة سبيستون من أول نغمة؟ شارة جديدة كل يوم.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
   /* ===== Theme — change --bg to recolor the whole page ===== */
   :root{
     --bg:#7cc6fe;            /* page background */
-    --ink:#111;              /* outlines, text, shadows */
+    --ink:#14121f;           /* outlines, text, shadows */
     --paper:#ffffff;         /* cards */
-    --soft:rgba(255,255,255,.55); /* empty rows */
-    --muted:#444;
+    --soft:#eef7ff;          /* empty rows */
+    --muted:#5b5870;
     --accent:#ff3d7f;        /* play button, title, answer */
     --accent2:#7b5cff;       /* submit button, screen cover */
-    --ok:#2ec27e; --okbg:#9ff0c3;
-    --bad:#ff3d3d; --badbg:#ffb3b3;
-    --skipbg:#e3e3e3;
-    --hl:#ffe3ec;            /* hover / unlocked part of bar */
+    --sun:#ffd23f;           /* small highlights */
+    --ok:#2ec27e; --okbg:#c9f5dc;
+    --bad:#ff4d4d; --badbg:#ffd1d1;
+    --skipbg:#e9e8ef;
+    --r:16px;                /* corner radius */
+    --b:3px;                 /* outline width */
+    --sh:4px 4px 0 var(--ink);
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
     font-family:"Tajawal",system-ui,sans-serif; color:var(--ink); min-height:100vh;
-    background:radial-gradient(circle,rgba(0,0,0,.08) 1.5px,transparent 1.6px) 0 0/18px 18px,var(--bg);
+    background:radial-gradient(circle,rgba(20,18,31,.07) 1.5px,transparent 1.6px) 0 0/20px 20px,var(--bg);
+    -webkit-tap-highlight-color:transparent;
   }
-  .wrap{max-width:480px;margin:0 auto;padding:16px 16px 40px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-  h1{font-family:"Lalezar",sans-serif;font-weight:400;font-size:38px;margin:0;line-height:1.2;text-shadow:3px 3px 0 #fff}
+  button{font-family:inherit}
+  .wrap{max-width:440px;margin:0 auto;padding:14px 16px 48px;display:flex;flex-direction:column;gap:16px}
+
+  /* ---------- header ---------- */
+  header{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px}
+  .brand{text-align:center;line-height:1}
+  h1{font-family:"Lalezar",sans-serif;font-weight:400;font-size:40px;margin:0;letter-spacing:0;
+     text-shadow:3px 3px 0 #fff}
   h1 span{color:var(--accent)}
-  .sub{font-size:15px;font-weight:700;margin:0 0 14px;text-align:center}
-  .iconbtn{background:var(--paper);border:3px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--ink);
-    color:var(--ink);width:42px;height:42px;font-size:18px;cursor:pointer}
-  .iconbtn:active,.btn:active,.playbtn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+  .tag{display:inline-block;margin-top:6px;background:var(--sun);border:2px solid var(--ink);border-radius:999px;
+       padding:3px 12px;font-size:13px;font-weight:800;transform:rotate(-2deg);box-shadow:2px 2px 0 var(--ink)}
+  .iconbtn{width:44px;height:44px;border-radius:12px;background:var(--paper);border:var(--b) solid var(--ink);
+    box-shadow:3px 3px 0 var(--ink);font-size:20px;font-weight:800;cursor:pointer;color:var(--ink);
+    display:grid;place-items:center;padding:0}
+  .iconbtn svg{width:22px;height:22px}
+  .press:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
 
-  /* attempts */
-  .rows{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
-  .row{height:42px;border-radius:12px;border:3px solid var(--ink);background:var(--soft);
-       display:flex;align-items:center;gap:8px;padding:0 12px;font-size:16px;font-weight:800}
-  .row.cur{background:var(--paper);box-shadow:4px 4px 0 var(--ink)}
-  .row.bad{background:var(--badbg)}
-  .row.skip{background:var(--skipbg);color:#555}
-  .row.ok{background:var(--okbg)}
-  .row .t{margin-inline-start:auto;font-size:12px;color:#555;font-weight:700}
+  /* ---------- cards ---------- */
+  .card{background:var(--paper);border:var(--b) solid var(--ink);border-radius:var(--r);box-shadow:6px 6px 0 var(--ink);padding:14px}
 
-  /* player card */
-  .player{background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:16px;margin-bottom:16px}
-  .bar{position:relative;height:16px;border-radius:8px;border:2px solid var(--ink);background:var(--soft);overflow:hidden;margin-bottom:6px}
-  .bar .unlocked{position:absolute;inset-block:0;right:0;background:var(--hl)}
-  .bar .prog{position:absolute;inset-block:0;right:0;width:0;background:var(--accent)}
-  .ticks{position:relative;height:16px;font-size:11px;font-weight:700;margin-bottom:12px}
-  .ticks span{position:absolute;transform:translateX(50%)}
-
-  /* screen: holds the YouTube video, covered until the round ends */
-  .screen{position:relative;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:#000}
+  /* ---------- player ---------- */
+  .screen{position:relative;aspect-ratio:16/9;border:var(--b) solid var(--ink);border-radius:12px;overflow:hidden;background:#000}
   .screen iframe,#yt{position:absolute;inset:0;width:100%;height:100%;border:0}
-  .cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-    background:radial-gradient(circle,rgba(255,255,255,.18) 1.5px,transparent 1.6px) 0 0/16px 16px,var(--accent2);z-index:2}
+  .cover{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+    background:
+      radial-gradient(circle,rgba(255,255,255,.16) 1.5px,transparent 1.6px) 0 0/16px 16px,
+      linear-gradient(135deg,#8a6dff,#6a45ff)}
   .cover.gone{display:none}
-  .playbtn{width:72px;height:72px;border-radius:50%;cursor:pointer;
-    background:var(--accent);color:#fff;font-size:28px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+  .notes{position:absolute;inset:0;pointer-events:none;color:rgba(255,255,255,.35);font-size:26px;font-weight:800}
+  .notes span{position:absolute}
+  .playbtn{width:78px;height:78px;border-radius:50%;cursor:pointer;background:var(--accent);color:#fff;
+    border:var(--b) solid var(--ink);box-shadow:var(--sh);display:grid;place-items:center;padding:0}
+  .playbtn svg{width:30px;height:30px}
   .playbtn:disabled{opacity:.6;cursor:wait}
-  .cliplen{font-weight:800;font-size:14px;color:#fff;background:var(--ink);padding:3px 12px;border-radius:20px}
+  .playbtn.playing{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{50%{transform:scale(1.06)}}
+  .hint{color:#fff;font-weight:800;font-size:14px;text-shadow:0 1px 0 rgba(0,0,0,.25)}
 
-  /* guess */
+  .timeline{margin-top:14px}
+  .bar{position:relative;height:18px;border:var(--b) solid var(--ink);border-radius:999px;background:var(--soft);overflow:hidden}
+  .bar .unlocked{position:absolute;inset-block:0;right:0;background:#ffd6e5;transition:width .3s}
+  .bar .prog{position:absolute;inset-block:0;right:0;width:0;background:var(--accent)}
+  .bar .tick{position:absolute;top:0;bottom:0;width:2px;background:rgba(20,18,31,.25)}
+  .status{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-weight:800;font-size:15px}
+  .status .now{display:flex;align-items:center;gap:6px}
+  .pill{background:var(--ink);color:#fff;border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800}
+
+  /* ---------- guess ---------- */
   .guess{position:relative}
-  .guess input{width:100%;font:inherit;font-size:16px;font-weight:700;padding:12px 14px;border-radius:12px;
-    border:3px solid var(--ink);background:var(--paper);color:var(--ink);outline:none;box-shadow:4px 4px 0 var(--ink)}
-  .guess input:focus{border-color:var(--accent)}
-  .list{position:absolute;bottom:calc(100% + 8px);inset-inline:0;max-height:240px;overflow:auto;
-    background:var(--paper);border:3px solid var(--ink);border-radius:12px;display:none;z-index:5;box-shadow:4px 4px 0 var(--ink)}
-  .list div{padding:10px 14px;cursor:pointer;font-weight:700;border-bottom:2px solid #eee}
+  .guess input{width:100%;font:inherit;font-size:17px;font-weight:700;padding:14px 16px;border-radius:14px;
+    border:var(--b) solid var(--ink);background:var(--paper);color:var(--ink);outline:none;box-shadow:var(--sh)}
+  .guess input::placeholder{color:#9a97a8}
+  .guess input:focus{border-color:var(--accent2)}
+  .list{position:absolute;top:calc(100% + 8px);inset-inline:0;max-height:260px;overflow:auto;z-index:10;
+    background:var(--paper);border:var(--b) solid var(--ink);border-radius:14px;display:none;box-shadow:var(--sh)}
+  .list div{padding:12px 16px;cursor:pointer;font-weight:700;font-size:16px;border-bottom:2px solid #f0eef5}
   .list div:last-child{border-bottom:none}
-  .list div:hover,.list div.hl{background:var(--hl)}
-  .actions{display:flex;gap:10px;margin-top:14px}
-  .btn{flex:1;font:inherit;font-weight:800;font-size:16px;padding:11px;border-radius:12px;cursor:pointer;
-    border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
-  .btn.skipb{background:var(--paper);color:var(--ink)}
-  .btn.sub{background:var(--accent2);color:#fff}
+  .list div:hover,.list div.hl{background:#efeaff}
+  .actions{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;margin-top:14px}
+  .btn{font:inherit;font-weight:800;font-size:17px;padding:13px 10px;border-radius:14px;cursor:pointer;
+    border:var(--b) solid var(--ink);box-shadow:var(--sh);color:var(--ink);background:var(--paper)}
+  .btn small{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-top:2px}
+  .btn.primary{background:var(--accent2);color:#fff}
 
-  /* result */
-  .result{display:none;text-align:center;background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:18px}
-  .result h2{margin:0 0 4px;font-size:24px;font-weight:800}
-  .result .ans{font-family:"Lalezar",sans-serif;font-size:36px;color:var(--accent);margin:4px 0 6px}
-  .result .squares{font-size:22px;letter-spacing:2px;margin:10px 0 14px}
-  .result .next{color:var(--muted);font-size:14px;font-weight:700;margin-top:12px}
-  .btn.share{background:var(--ok);color:var(--ink);flex:none;padding:11px 28px}
+  /* ---------- attempts ---------- */
+  .section-title{font-weight:800;font-size:15px;margin:0 4px 8px;display:flex;justify-content:space-between;color:var(--ink)}
+  .section-title span{color:var(--muted);font-weight:700}
+  .rows{display:flex;flex-direction:column;gap:8px}
+  .row{display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:10px;min-height:48px;padding:6px 10px;
+    border:var(--b) solid var(--ink);border-radius:14px;background:var(--soft)}
+  .row .num{width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);background:#fff;display:grid;place-items:center;font-weight:800;font-size:15px}
+  .row .txt{font-weight:800;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .len{font-size:13px;font-weight:800;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .row.cur{background:var(--paper);box-shadow:var(--sh)}
+  .row.cur .num{background:var(--sun)}
+  .row.cur .txt{color:var(--muted);font-weight:700}
+  .row.bad{background:var(--badbg)} .row.bad .num{background:var(--bad);color:#fff}
+  .row.skip{background:var(--skipbg)} .row.skip .txt{color:var(--muted)} .row.skip .num{background:#bdbac8}
+  .row.ok{background:var(--okbg)} .row.ok .num{background:var(--ok);color:#fff}
+  .row.locked{opacity:.75}
 
-  /* modal */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+  /* ---------- result ---------- */
+  .result{display:none;text-align:center}
+  .result h2{margin:2px 0 2px;font-size:26px;font-weight:800}
+  .result .lbl{color:var(--muted);font-weight:700}
+  .result .ans{font-family:"Lalezar",sans-serif;font-size:38px;color:var(--accent);margin:2px 0 4px;line-height:1.3}
+  .result .squares{font-size:24px;letter-spacing:3px;margin:8px 0 14px;direction:ltr}
+  .result .next{color:var(--muted);font-size:14px;font-weight:700;margin-top:14px}
+  .btn.share{background:var(--ok);padding:13px 34px}
+
+  /* ---------- modals, toast, errors ---------- */
+  .modal{position:fixed;inset:0;background:rgba(20,18,31,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
   .modal.open{display:flex}
-  .box{background:var(--paper);border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:20px;max-width:400px;width:100%}
-  .box h3{margin:0 0 10px;font-family:"Lalezar",sans-serif;font-weight:400;font-size:26px}
-  .box p,.box li{color:#333;font-size:16px;line-height:1.7}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;margin:10px 0}
-  .stats b{display:block;font-size:26px}
+  .box{background:var(--paper);border:var(--b) solid var(--ink);border-radius:20px;box-shadow:6px 6px 0 var(--ink);padding:22px;max-width:400px;width:100%}
+  .box h3{margin:0 0 12px;font-family:"Lalezar",sans-serif;font-weight:400;font-size:28px}
+  .steps{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:10px}
+  .steps li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;font-size:16px;font-weight:700;line-height:1.5}
+  .steps b{width:34px;height:34px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;background:var(--sun)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;margin:6px 0 14px}
+  .stats div{background:var(--soft);border:2px solid var(--ink);border-radius:12px;padding:8px 2px}
+  .stats b{display:block;font-size:24px}
   .stats span{font-size:12px;color:var(--muted);font-weight:700}
-  .dist div{display:flex;align-items:center;gap:6px;margin:5px 0;font-size:13px;font-weight:700}
-  .dist i{display:block;height:20px;background:var(--accent);color:#fff;border:2px solid var(--ink);border-radius:6px;min-width:22px;
-          font-style:normal;padding:0 6px;text-align:left;line-height:16px}
+  .dist div{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;margin:6px 0;font-size:13px;font-weight:800}
+  .dist i{display:block;height:22px;background:var(--accent2);color:#fff;border:2px solid var(--ink);border-radius:8px;min-width:26px;
+          font-style:normal;padding:0 8px;line-height:18px;text-align:left}
   .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
-    padding:8px 16px;border-radius:10px;font-weight:700;display:none;z-index:30}
-  .err{background:var(--badbg);border:3px solid var(--ink);border-radius:12px;padding:10px;margin-bottom:12px;display:none;font-size:14px;font-weight:700}
+    padding:10px 18px;border-radius:12px;font-weight:800;display:none;z-index:30}
+  .err{background:var(--badbg);border:var(--b) solid var(--ink);border-radius:14px;padding:12px;display:none;font-size:14px;font-weight:700}
+  .testbar{display:flex;gap:10px;align-items:center;justify-content:center;font-weight:800}
+  .testbar a,.testbar span.off{font-size:14px;padding:7px 14px;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <header>
-    <button class="iconbtn" id="helpBtn" aria-label="طريقة اللعب">؟</button>
-    <h1>من أول <span>نغمة</span></h1>
-    <button class="iconbtn" id="statsBtn" aria-label="الإحصائيات">📊</button>
+    <button class="iconbtn press" id="helpBtn" aria-label="طريقة اللعب">؟</button>
+    <div class="brand">
+      <h1><span>شارة</span> البداية</h1>
+      <div class="tag" id="dayLbl"></div>
+    </div>
+    <button class="iconbtn press" id="statsBtn" aria-label="الإحصائيات">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 20V12M12 20V5M19 20v-6"/></svg>
+    </button>
   </header>
-  <p class="sub">تعرف أغنية سبيستون من أول نغمة؟ <span id="dayLbl"></span></p>
 
   <div class="err" id="err"></div>
-  <div class="rows" id="rows"></div>
 
-  <div class="player">
-    <div class="bar"><div class="unlocked" id="unlocked"></div><div class="prog" id="prog"></div></div>
-    <div class="ticks" id="ticks"></div>
+  <!-- Player -->
+  <div class="card">
     <div class="screen">
       <div id="yt"></div>
       <div class="cover" id="cover">
-        <button class="playbtn" id="playBtn" disabled aria-label="تشغيل">▶</button>
-        <div class="cliplen" id="clipLen">جاري التحميل…</div>
+        <div class="notes"><span style="top:12%;right:10%">♪</span><span style="bottom:14%;left:12%">♫</span><span style="top:18%;left:22%;font-size:18px">♪</span></div>
+        <button class="playbtn press" id="playBtn" disabled aria-label="تشغيل"></button>
+        <div class="hint" id="hint">جاري التحميل…</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="bar" id="bar"><div class="unlocked" id="unlocked"></div><div class="prog" id="prog"></div></div>
+      <div class="status">
+        <div class="now">🎧 مسموح لك الآن</div>
+        <div class="pill" id="clipLen">—</div>
       </div>
     </div>
   </div>
 
+  <!-- Guess -->
   <div id="playArea">
     <div class="guess">
-      <div class="list" id="list"></div>
       <input id="inp" placeholder="اكتب اسم المسلسل…" autocomplete="off">
+      <div class="list" id="list"></div>
     </div>
     <div class="actions">
-      <button class="btn skipb" id="skipBtn">تخطي</button>
-      <button class="btn sub" id="subBtn">إجابة</button>
+      <button class="btn press" id="skipBtn">تخطّي</button>
+      <button class="btn primary press" id="subBtn">إجابة</button>
     </div>
   </div>
 
-  <div class="result" id="result">
+  <!-- Result -->
+  <div class="card result" id="result">
     <h2 id="resTitle"></h2>
-    <div>الإجابة:</div>
+    <div class="lbl">الإجابة</div>
     <div class="ans" id="resAns"></div>
     <div class="squares" id="resSq"></div>
-    <button class="btn share" id="shareBtn">مشاركة النتيجة</button>
+    <button class="btn share press" id="shareBtn">مشاركة النتيجة</button>
     <div class="next" id="nextLbl"></div>
+  </div>
+
+  <!-- Attempts -->
+  <div>
+    <div class="section-title">محاولاتك <span id="triesLeft"></span></div>
+    <div class="rows" id="rows"></div>
   </div>
 </div>
 
 <div class="modal" id="helpM"><div class="box">
   <h3>طريقة اللعب</h3>
-  <ul>
-    <li>اضغط ▶ واسمع أول جزء من أغنية سبيستون.</li>
-    <li>اكتب اسم المسلسل واختره من القائمة.</li>
-    <li>كل إجابة خاطئة أو تخطي يفتح لك جزءًا أطول من الأغنية.</li>
-    <li>عندك 5 محاولات. أغنية جديدة كل يوم!</li>
+  <ul class="steps">
+    <li><b>1</b><div>اضغط ▶ واسمع أول ثانية من شارة سبيستون.</div></li>
+    <li><b>2</b><div>اكتب اسم المسلسل واختره من القائمة.</div></li>
+    <li><b>3</b><div>كل إجابة خاطئة أو تخطٍّ يفتح لك جزءًا أطول.</div></li>
+    <li><b>4</b><div>عندك <span id="helpTries"></span> محاولات — وشارة جديدة كل يوم!</div></li>
   </ul>
-  <button class="btn sub" style="width:100%" data-close>يلا نبدأ</button>
+  <button class="btn primary press" style="width:100%" data-close>يلا نبدأ</button>
 </div></div>
 
 <div class="modal" id="statsM"><div class="box">
   <h3>إحصائياتك</h3>
   <div class="stats" id="statsGrid"></div>
   <div class="dist" id="dist"></div>
-  <button class="btn skipb" style="width:100%;margin-top:12px" data-close>إغلاق</button>
+  <button class="btn press" style="width:100%;margin-top:14px" data-close>إغلاق</button>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -176,10 +232,10 @@
 <script>
 // ===================== Settings =====================
 const START_DATE = "2026-10-10";               // day #1 (Cairo date)
-const CLIPS = [1, 2, 4, 6, 8];          // seconds unlocked per attempt
+const CLIPS = [1, 2, 4, 6, 8];                 // seconds unlocked per attempt
 const FULL_LEN = 20;                           // seconds played after the game ends (audio-file songs)
 const SHUFFLE_SEED = 7;                        // change once to re-shuffle (before launch only)
-const GAME_NAME = "من أول نغمة";
+const GAME_NAME = "شارة البداية";
 const SITE_URL = location.origin + location.pathname;
 const MAX = CLIPS.length;
 
@@ -190,7 +246,23 @@ const store = {
   set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
 function toast(msg){ const t=$("toast"); t.textContent=msg; t.style.display="block"; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display="none",1800); }
-function showError(msg){ const e=$("err"); e.style.display="block"; e.textContent=msg; $("clipLen").textContent="—"; }
+function showError(msg){ const e=$("err"); e.style.display="block"; e.textContent=msg; $("hint").textContent="—"; }
+
+// Arabic duration labels: ثانية / ثانيتان / ٤ ثوانٍ / ١٢ ثانية
+function secs(n){
+  if(n === 1) return "ثانية";
+  if(n === 2) return "ثانيتان";
+  if(n >= 3 && n <= 10 && Number.isInteger(n)) return n + " ثوانٍ";
+  return n + " ثانية";
+}
+function secsPlus(n){            // "+ثانية" / "+ثانيتين" / "+٤ ثوانٍ"
+  if(n === 1) return "+ثانية";
+  if(n === 2) return "+ثانيتين";
+  return "+" + secs(n);
+}
+
+const ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
+const ICON_STOP = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>';
 
 // Arabic-friendly normaliser: removes tashkeel/tatweel, unifies alef/yaa/taa marbuta, lowercases English
 function norm(s){
@@ -247,7 +319,8 @@ const MODE = YTINFO ? "yt" : (SONG.file ? "file" : "none");
 const START = (SONG.start ?? (YTINFO && YTINFO.t) ?? 0);
 
 let state = TEST_MODE ? null : store.get("st_state", null);
-if(!state || state.day !== DAY) state = { day: DAY, guesses: [], done: false, won: false };
+if(!state || state.day !== DAY || !Array.isArray(state.guesses) || state.guesses.length > MAX)
+  state = { day: DAY, guesses: [], done: false, won: false };
 function saveState(){ if(!TEST_MODE) store.set("st_state", state); }
 // guesses: [{type:"skip"} | {type:"bad", text} | {type:"ok", text}]
 
@@ -287,7 +360,7 @@ function filePlay(len, onEnd){
   len = Math.min(len, buffer.duration - start);
   const gain = ctx.createGain();
   const t0 = ctx.currentTime + 0.02;
-  const fade = Math.min(0.01, len/4);            // tiny fade so very short clips don't "click"
+  const fade = Math.min(0.01, len/4);            // tiny fade so short clips don't "click"
   gain.gain.setValueAtTime(0, t0);
   gain.gain.linearRampToValueAtTime(1, t0 + fade);
   gain.gain.setValueAtTime(1, t0 + len - fade);
@@ -353,15 +426,19 @@ function ytPlay(len, onEnd){
 
 // ===================== Unified player =====================
 let playing = false;
-function ready(){ $("playBtn").disabled = false; renderClipLabel(); }
+function setPlayIcon(isPlaying){
+  $("playBtn").innerHTML = isPlaying ? ICON_STOP : ICON_PLAY;
+  $("playBtn").classList.toggle("playing", isPlaying);
+}
+function ready(){ $("playBtn").disabled = false; renderStatus(); }
 function stopClip(){
   if(MODE === "yt") ytStop(); else fileStop();
-  playing = false; resetProgress(); $("playBtn").textContent = "▶";
+  playing = false; resetProgress(); setPlayIcon(false);
 }
 function playClip(len){
   if(playing){ stopClip(); return; }   // tap again = stop
-  playing = true; $("playBtn").textContent = "■";
-  const onEnd = () => { playing = false; resetProgress(); $("playBtn").textContent = "▶"; };
+  playing = true; setPlayIcon(true);
+  const onEnd = () => { playing = false; resetProgress(); setPlayIcon(false); };
   if(MODE === "yt") ytPlay(len, onEnd); else filePlay(len, onEnd);
 }
 
@@ -374,30 +451,40 @@ function renderRows(){
     const g = state.guesses[i];
     const d = document.createElement("div");
     d.className = "row";
+    let txt = "";
     if(g){
       d.classList.add(g.type);
-      d.textContent = g.type === "skip" ? "تم التخطي" : (g.type==="bad" ? "✗ " : "✓ ") + g.text;
+      txt = g.type === "skip" ? "تم التخطّي" : (g.type === "bad" ? "✗ " : "✓ ") + g.text;
     } else if(i === state.guesses.length && !state.done){
-      d.classList.add("cur");
+      d.classList.add("cur"); txt = "دورك الآن…";
+    } else {
+      d.classList.add("locked");
     }
-    const t = document.createElement("span"); t.className = "t"; t.textContent = CLIPS[i] + " ث";
-    d.appendChild(t);
+    d.innerHTML = `<div class="num">${i+1}</div><div class="txt"></div><div class="len">${secs(CLIPS[i])}</div>`;
+    d.querySelector(".txt").textContent = txt;
     rows.appendChild(d);
   }
+  const left = MAX - state.guesses.length;
+  $("triesLeft").textContent = state.done ? "" : `باقي ${left} من ${MAX}`;
 }
-function renderTicks(){
-  const max = CLIPS[MAX-1], el = $("ticks"); el.innerHTML = "";
-  CLIPS.forEach(c => { if(c < 1) return; const s=document.createElement("span"); s.style.right = (c/max*100)+"%"; s.textContent = c; el.appendChild(s); });
+function renderBar(){
+  const max = CLIPS[MAX-1], bar = $("bar");
+  bar.querySelectorAll(".tick").forEach(t => t.remove());
+  CLIPS.slice(0, -1).forEach(c => {
+    const t = document.createElement("div"); t.className = "tick"; t.style.right = (c/max*100) + "%"; bar.appendChild(t);
+  });
   $("unlocked").style.width = (state.done ? 100 : curClip()/max*100) + "%";
 }
-function renderClipLabel(){
+function renderStatus(){
   if(state.done){
-    $("clipLen").textContent = "اسمع الأغنية";
+    $("clipLen").textContent = "الشارة كاملة";
+    $("hint").textContent = "اسمع الشارة";
     return;
   }
-  $("clipLen").textContent = "مسموح لك: " + curClip() + " ثانية";
+  $("clipLen").textContent = secs(curClip());
+  $("hint").textContent = MODE === "none" ? "—" : ($("playBtn").disabled ? "جاري التحميل…" : "اضغط واسمع");
   const next = CLIPS[state.guesses.length+1];
-  $("skipBtn").textContent = next ? `تخطي (+${+(next - curClip()).toFixed(1)}ث)` : "استسلام";
+  $("skipBtn").innerHTML = next ? `تخطّي<small>${secsPlus(next - curClip())}</small>` : `استسلام<small>اعرف الإجابة</small>`;
 }
 function squares(){
   return Array.from({length:MAX},(_,i)=>{
@@ -405,16 +492,13 @@ function squares(){
     return !g ? "⬜" : g.type==="ok" ? "🟩" : g.type==="skip" ? "⬛" : "🟥";
   }).join("");
 }
-function revealVideo(){
-  if(MODE === "yt") $("cover").classList.add("gone");   // show the actual video at the end
-}
 function renderResult(){
   $("playArea").style.display = "none";
   $("result").style.display = "block";
-  $("resTitle").textContent = state.won ? "أحسنت! 🎉" : "للأسف! المرة الجاية 💪";
+  $("resTitle").textContent = state.won ? "أحسنت! 🎉" : "المرة الجاية إن شاء الله 💪";
   $("resAns").textContent = SONG.title;
   $("resSq").textContent = squares();
-  revealVideo();
+  if(MODE === "yt") $("cover").classList.add("gone");   // show the actual video at the end
   updateNext();
 }
 function updateNext(){
@@ -422,11 +506,11 @@ function updateNext(){
   const mid = new Date(cairo); mid.setHours(24,0,0,0);
   const ms = mid - cairo;
   const h = Math.floor(ms/3.6e6), m = Math.floor(ms%3.6e6/6e4);
-  $("nextLbl").textContent = `الأغنية الجاية بعد ${h} ساعة و ${m} دقيقة`;
+  $("nextLbl").textContent = `الشارة الجاية بعد ${h} ساعة و ${m} دقيقة`;
 }
 function render(){
-  $("dayLbl").textContent = TEST_MODE ? `🔧 تجربة: أغنية ${TEST} (start = ${START})` : "#" + DAY;
-  renderRows(); renderTicks(); renderClipLabel();
+  $("dayLbl").textContent = TEST_MODE ? `🔧 تجربة · شارة ${TEST} · تبدأ من ${START} ث` : `شارة اليوم #${DAY}`;
+  renderRows(); renderBar(); renderStatus();
   if(state.done) renderResult();
 }
 
@@ -444,6 +528,9 @@ function showList(){
   if(!q){ list.style.display="none"; return; }
   const used = new Set(state.guesses.filter(g=>g.text).map(g=>g.text));
   const m = OPTIONS.filter(o => !used.has(o.title) && o.keys.some(k => k.includes(q))).slice(0,8);
+  // Typed a full name exactly → select it and close the list so it doesn't cover the buttons
+  const exact = m.filter(o => o.keys.includes(q));
+  if(exact.length === 1 && m.length === 1){ picked = exact[0].title; list.style.display = "none"; return; }
   list.innerHTML = "";
   m.forEach(o => {
     const d = document.createElement("div");
@@ -491,7 +578,7 @@ function submit(){
   const val = picked || OPTIONS.find(o => o.keys.includes(norm($("inp").value)))?.title;
   if(!val){ toast("اختار الاسم من القائمة"); return; }
   addGuess({ type: val === SONG.title ? "ok" : "bad", text: val });
-  if(val !== SONG.title && !state.done) toast("غلط! اسمع جزء أطول");
+  if(val !== SONG.title && !state.done) toast("غلط! اسمع جزء أطول 🎧");
 }
 $("subBtn").onclick = submit;
 $("skipBtn").onclick = () => { if(!state.done) addGuess({type:"skip"}); };
@@ -499,8 +586,9 @@ $("playBtn").onclick = () => playClip(state.done ? FULL_LEN : curClip());
 
 // ===================== Stats =====================
 function saveStats(){
-  const st = store.get("st_stats", {played:0,wins:0,streak:0,best:0,dist:Array(MAX+1).fill(0),last:0});
+  const st = store.get("st_stats", {played:0,wins:0,streak:0,best:0,dist:[],last:0});
   if(st.last === DAY) return;
+  if(!Array.isArray(st.dist) || st.dist.length !== MAX+1) st.dist = Array(MAX+1).fill(0);
   st.played++;
   if(state.won){
     st.wins++; st.dist[state.guesses.length-1]++;
@@ -511,24 +599,26 @@ function saveStats(){
   store.set("st_stats", st);
 }
 function showStats(){
-  const st = store.get("st_stats", {played:0,wins:0,streak:0,best:0,dist:Array(MAX+1).fill(0)});
+  const st = store.get("st_stats", {played:0,wins:0,streak:0,best:0,dist:[]});
+  const dist = (Array.isArray(st.dist) && st.dist.length === MAX+1) ? st.dist : Array(MAX+1).fill(0);
   const pct = st.played ? Math.round(st.wins/st.played*100) : 0;
   $("statsGrid").innerHTML =
     `<div><b>${st.played}</b><span>لعبت</span></div><div><b>${pct}%</b><span>فوز</span></div>
      <div><b>${st.streak}</b><span>السلسلة</span></div><div><b>${st.best}</b><span>أفضل سلسلة</span></div>`;
-  const mx = Math.max(1,...st.dist);
-  $("dist").innerHTML = st.dist.map((n,i)=>
-    `<div><span style="width:40px">${i<MAX? CLIPS[i]+"ث" : "✗"}</span><i style="width:${n/mx*80+5}%">${n}</i></div>`).join("");
+  const mx = Math.max(1,...dist);
+  $("dist").innerHTML = dist.map((n,i)=>
+    `<div><span>${i<MAX ? secs(CLIPS[i]) : "لم أعرفها"}</span><i style="width:${n/mx*85+8}%">${n}</i></div>`).join("");
   $("statsM").classList.add("open");
 }
 $("statsBtn").onclick = showStats;
 $("helpBtn").onclick = () => $("helpM").classList.add("open");
 document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest(".modal").classList.remove("open"));
 document.querySelectorAll(".modal").forEach(m => m.onclick = e => { if(e.target===m) m.classList.remove("open"); });
+$("helpTries").textContent = MAX;
 
 // ===================== Share =====================
 $("shareBtn").onclick = async () => {
-  const score = state.won ? CLIPS[state.guesses.length-1] + " ث" : "✗";
+  const score = state.won ? secs(CLIPS[state.guesses.length-1]) : "✗";
   const text = `🎵 ${GAME_NAME} #${DAY}\n${squares()}  ${score}\n${SITE_URL}`;
   try{
     if(navigator.share){ await navigator.share({text}); return; }
@@ -539,20 +629,21 @@ $("shareBtn").onclick = async () => {
 // ===================== Test mode bar (only with ?test=N) =====================
 if(TEST_MODE){
   const n = +TEST, bar = document.createElement("div");
-  bar.style.cssText = "display:flex;gap:8px;align-items:center;justify-content:center;margin:0 0 14px;font-weight:800";
+  bar.className = "testbar";
   const link = (i, txt) => i >= 0 && i < SONGS.length
-    ? `<a class="btn skipb" style="flex:none;padding:6px 14px;text-decoration:none" href="?test=${i}">${txt}</a>`
-    : `<span class="btn skipb" style="flex:none;padding:6px 14px;opacity:.3">${txt}</span>`;
+    ? `<a class="btn press" href="?test=${i}">${txt}</a>`
+    : `<span class="btn off" style="opacity:.35">${txt}</span>`;
   bar.innerHTML = link(n-1, "→ السابقة") + `<span>${n} / ${SONGS.length-1}</span>` + link(n+1, "التالية ←");
   $("err").before(bar);
 }
 
 // ===================== Start =====================
-if(!store.get("st_seen_help", false)){ $("helpM").classList.add("open"); store.set("st_seen_help", true); }
+setPlayIcon(false);
+if(!TEST_MODE && !store.get("st_seen_help", false)){ $("helpM").classList.add("open"); store.set("st_seen_help", true); }
 render();
 if(MODE === "yt") loadYouTube();
 else if(MODE === "file") loadFile();
-else showError("أغنية اليوم ليس لها رابط يوتيوب أو ملف صوت في songs.js: " + SONG.title);
+else showError("شارة اليوم ليس لها رابط يوتيوب أو ملف صوت في songs.js: " + SONG.title);
 setInterval(()=>{ if(state.done) updateNext(); if(dayNumber()!==DAY) location.reload(); }, 30000);
 </script>
 </body>
