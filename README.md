@@ -1,49 +1,39 @@
 # شارة البداية — Spacetoon Songless
 
-Daily "name the song from the first notes" game for Spacetoon intros.
+Daily "name the intro from the first second" game for Spacetoon cartoon intros.
 Clips unlock at 1 → 2 → 4 → 6 → 8 seconds (5 tries). Wrong guess or skip = longer clip.
 
 ## Files
 ```
-index.html   the game
-songs.js     the song list (edit this)
-audio/       only needed for songs that use audio files
+index.html            the game
+songs.js              the song list (Claude updates it from the Google Sheet)
+about.html            عن اللعبة — how to play, copyright note, contact
+privacy.html          سياسة الخصوصية
+404.html              "page not found" page (GitHub Pages uses it automatically)
+page.css              style for about / privacy
+sw.js                 makes the site installable as an app on phones
+site.webmanifest      app name, colors and icons for "install"
+favicon.ico, favicon-32.png, apple-touch-icon.png,
+icon-192.png, icon-512.png, icon-maskable-512.png   icons
+og-image.png          picture shown when the link is shared (WhatsApp, Facebook…)
+robots.txt, sitemap.xml   help Google find the pages
 ```
 
-## Adding songs (YouTube)
-1. Find the intro on YouTube, open **Share → Embed** to make sure embedding is allowed.
-2. Paste the link into `songs.js`:
-   ```js
-   { title: "سلام دانك", aliases: ["slam dunk"], youtube: "https://www.youtube.com/watch?v=XXXXXXXXXXX", start: 3.5 },
-   ```
-3. `start` = the second of the first real note. Or use YouTube's "Copy video URL at current time"
-   link (it ends in `&t=12`) and leave `start` out.
-4. Prefer uploads WITHOUT ads before the video — an ad would play instead of the clip.
-5. Add new songs at the END of the list so upcoming days don't change.
-
-During the round the video is covered and only the sound plays. When the round ends
-the cover disappears and the video plays from the start with normal YouTube controls.
-
-## Tuning start times (test mode)
-Open the site with `?test=5` at the end of the address (e.g. `…/index.html?test=5`) to play
-song #5 from `songs.js` (counting from 0). The header shows which song and its `start`.
-Nothing is saved in test mode, so your real stats aren't affected.
-
-## Extra answer choices
-`EXTRA_TITLES` in `songs.js` = shows that appear in the guess list but are never the answer.
-They make guessing harder. When you find a song for one, move it into `SONGS`.
-
-## YouTube timing note
-YouTube can't stop at exactly 0.1 s — expect about ±0.2 s on the first clips.
-For songs where that matters, use an audio file instead:
-```js
-{ title: "اسم المسلسل", aliases: [], file: "audio/song.mp3", start: 2.5 },
-```
+## Moving to your own domain later
+These files contain the full address `https://islam-salem.github.io/awelnaghma/` —
+replace it with the new address in all of them:
+- `index.html` (canonical + og:url + og:image + twitter:image)
+- `robots.txt`
+- `sitemap.xml`
 
 ## Settings (top of the script in index.html)
 - `START_DATE` — the date of puzzle #1 (Cairo time).
 - `CLIPS` — clip lengths per attempt.
 - `--bg` (top of the CSS) — page background color.
+
+## Testing songs
+Add `?test=0` to the address. Use السابقة / التالية to go through every song.
+Nothing is saved in test mode.
 
 ## Hosting
 Works on GitHub Pages as-is. Open it through a server (GitHub Pages, VS Code Live Server),

@@ -4,7 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>شارة البداية — شارات سبيستون</title>
-<meta name="description" content="تعرف شارة سبيستون من أول نغمة؟ شارة جديدة كل يوم.">
+<meta name="description" content="كم ثانية تحتاج لتعرف شارة سبيستون؟ لعبة يومية مجانية: اسمع أول ثانية من الشارة وخمّن المسلسل. شارة جديدة كل يوم.">
+<link rel="canonical" href="https://islam-salem.github.io/awelnaghma/">
+
+<!-- Icons & app -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#7cc6fe">
+<meta name="apple-mobile-web-app-title" content="شارة البداية">
+
+<!-- Link previews (WhatsApp, Facebook, X…). Image links must be full addresses — update when you move to your own domain -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="شارة البداية">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:title" content="شارة البداية — كم ثانية تحتاج لتعرف شارة سبيستون؟">
+<meta property="og:description" content="اسمع أول ثانية من الشارة وخمّن المسلسل. شارة جديدة كل يوم!">
+<meta property="og:url" content="https://islam-salem.github.io/awelnaghma/">
+<meta property="og:image" content="https://islam-salem.github.io/awelnaghma/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="شارة البداية — كم ثانية تحتاج لتعرف شارة سبيستون؟">
+<meta name="twitter:description" content="اسمع أول ثانية من الشارة وخمّن المسلسل. شارة جديدة كل يوم!">
+<meta name="twitter:image" content="https://islam-salem.github.io/awelnaghma/og-image.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -140,6 +165,21 @@
   .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
     padding:10px 18px;border-radius:12px;font-weight:800;display:none;z-index:30}
   .err{background:var(--badbg);border:var(--b) solid var(--ink);border-radius:14px;padding:12px;display:none;font-size:14px;font-weight:700}
+  .install{display:none;align-items:center;gap:12px;background:var(--sun);border:var(--b) solid var(--ink);border-radius:var(--r);
+    box-shadow:var(--sh);padding:12px 14px}
+  .install.show{display:flex}
+  .install img{width:44px;height:44px;flex:none}
+  .install .t{flex:1;font-weight:800;font-size:15px;line-height:1.4}
+  .install .t small{display:block;font-weight:700;font-size:13px;color:var(--ink);opacity:.75}
+  .install .go{flex:none;font:inherit;font-weight:800;font-size:15px;padding:9px 14px;border-radius:12px;cursor:pointer;
+    background:var(--ink);color:#fff;border:var(--b) solid var(--ink)}
+  .install .x{flex:none;background:none;border:none;font-size:20px;font-weight:800;cursor:pointer;color:var(--ink);padding:0 4px}
+  .ios-steps{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:12px}
+  .ios-steps li{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;font-size:16px;font-weight:700}
+  .ios-steps .ic{width:40px;height:40px;border-radius:10px;border:2px solid var(--ink);display:grid;place-items:center;background:var(--soft)}
+  .ios-steps svg{width:22px;height:22px}
+  .sitefoot{text-align:center;font-size:14px;font-weight:800;margin-top:4px}
+  .sitefoot a{color:var(--ink);text-decoration:none;margin:0 8px;border-bottom:2px solid rgba(20,18,31,.35)}
   .testbar{display:flex;gap:10px;align-items:center;justify-content:center;font-weight:800}
   .testbar a,.testbar span.off{font-size:14px;padding:7px 14px;text-decoration:none}
 </style>
@@ -206,6 +246,18 @@
     <div class="section-title">محاولاتك <span id="triesLeft"></span></div>
     <div class="rows" id="rows"></div>
   </div>
+
+  <!-- Install as app (shown only on phones that can install) -->
+  <div class="install" id="installBox">
+    <img src="icon-192.png" alt="">
+    <div class="t">ثبّت «شارة البداية» على موبايلك<small>تفتحها كتطبيق بضغطة واحدة كل يوم</small></div>
+    <button class="go press" id="installBtn">تثبيت</button>
+    <button class="x" id="installX" aria-label="إغلاق">×</button>
+  </div>
+
+  <footer class="sitefoot">
+    <a href="about.html">عن اللعبة</a> · <a href="privacy.html">الخصوصية</a> · <a href="mailto:islamspo@gmail.com">تواصل معنا</a>
+  </footer>
 </div>
 
 <div class="modal" id="helpM"><div class="box">
@@ -224,6 +276,16 @@
   <div class="stats" id="statsGrid"></div>
   <div class="dist" id="dist"></div>
   <button class="btn press" style="width:100%;margin-top:14px" data-close>إغلاق</button>
+</div></div>
+
+<div class="modal" id="iosM"><div class="box">
+  <h3>ثبّتها على الآيفون</h3>
+  <ul class="ios-steps">
+    <li><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#14121f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></div><div>اضغط زر <b>المشاركة</b> أسفل الشاشة في Safari</div></li>
+    <li><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#14121f" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></div><div>اختر <b>«إضافة إلى الشاشة الرئيسية»</b></div></li>
+    <li><div class="ic"><img src="icon-192.png" alt="" style="width:30px;height:30px"></div><div>اضغط <b>«إضافة»</b> — وهتلاقي اللعبة على شاشتك!</div></li>
+  </ul>
+  <button class="btn primary press" style="width:100%" data-close>تمام</button>
 </div></div>
 
 <div class="toast" id="toast"></div>
@@ -378,6 +440,7 @@ let yt, ytReady = false, warming = false, pendingLen = 0, clipTimer, ytOnEnd;
 function loadYouTube(){
   window.onYouTubeIframeAPIReady = () => {
     yt = new YT.Player("yt", {
+      host: "https://www.youtube-nocookie.com",   // privacy-enhanced mode
       videoId: YTINFO.id,
       playerVars: { controls: 1, disablekb: 1, playsinline: 1, rel: 0, iv_load_policy: 3, fs: 0 },
       events: {
@@ -636,6 +699,39 @@ if(TEST_MODE){
   bar.innerHTML = link(n-1, "→ السابقة") + `<span>${n} / ${SONGS.length-1}</span>` + link(n+1, "التالية ←");
   $("err").before(bar);
 }
+
+// ===================== Install as app =====================
+(function(){
+  const box = $("installBox");
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const dismissed = store.get("st_install_x", 0) > Date.now();
+  let deferred = null;
+  if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+  if(standalone || TEST_MODE) return;
+  // Android / Chrome: the browser tells us when installing is possible
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault(); deferred = e;
+    if(!dismissed) box.classList.add("show");
+  });
+  window.addEventListener("appinstalled", () => { box.classList.remove("show"); toast("تم التثبيت 🎉"); });
+  // iPhone: no install prompt exists — show the box with a how-to guide instead
+  if(isIOS && !dismissed) box.classList.add("show");
+  $("installBtn").onclick = async () => {
+    if(deferred){
+      deferred.prompt();
+      const r = await deferred.userChoice.catch(()=>null);
+      deferred = null;
+      if(r && r.outcome === "accepted") box.classList.remove("show");
+    } else if(isIOS){
+      $("iosM").classList.add("open");
+    }
+  };
+  $("installX").onclick = () => {          // hide for 14 days
+    box.classList.remove("show");
+    store.set("st_install_x", Date.now() + 14*864e5);
+  };
+})();
 
 // ===================== Start =====================
 setPlayIcon(false);
