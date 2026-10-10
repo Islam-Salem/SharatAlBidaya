@@ -158,7 +158,7 @@
     <li>اضغط ▶ واسمع أول جزء من أغنية سبيستون.</li>
     <li>اكتب اسم المسلسل واختره من القائمة.</li>
     <li>كل إجابة خاطئة أو تخطي يفتح لك جزءًا أطول من الأغنية.</li>
-    <li>عندك 6 محاولات. أغنية جديدة كل يوم!</li>
+    <li>عندك 5 محاولات. أغنية جديدة كل يوم!</li>
   </ul>
   <button class="btn sub" style="width:100%" data-close>يلا نبدأ</button>
 </div></div>
@@ -176,7 +176,7 @@
 <script>
 // ===================== Settings =====================
 const START_DATE = "2026-10-10";               // day #1 (Cairo date)
-const CLIPS = [0.1, 0.5, 1, 2, 4, 8];          // seconds unlocked per attempt
+const CLIPS = [1, 2, 4, 6, 8];          // seconds unlocked per attempt
 const FULL_LEN = 20;                           // seconds played after the game ends (audio-file songs)
 const SHUFFLE_SEED = 7;                        // change once to re-shuffle (before launch only)
 const GAME_NAME = "من أول نغمة";
@@ -535,6 +535,17 @@ $("shareBtn").onclick = async () => {
     await navigator.clipboard.writeText(text); toast("تم نسخ النتيجة");
   }catch(e){ try{ await navigator.clipboard.writeText(text); toast("تم نسخ النتيجة"); }catch(_){} }
 };
+
+// ===================== Test mode bar (only with ?test=N) =====================
+if(TEST_MODE){
+  const n = +TEST, bar = document.createElement("div");
+  bar.style.cssText = "display:flex;gap:8px;align-items:center;justify-content:center;margin:0 0 14px;font-weight:800";
+  const link = (i, txt) => i >= 0 && i < SONGS.length
+    ? `<a class="btn skipb" style="flex:none;padding:6px 14px;text-decoration:none" href="?test=${i}">${txt}</a>`
+    : `<span class="btn skipb" style="flex:none;padding:6px 14px;opacity:.3">${txt}</span>`;
+  bar.innerHTML = link(n-1, "→ السابقة") + `<span>${n} / ${SONGS.length-1}</span>` + link(n+1, "التالية ←");
+  $("err").before(bar);
+}
 
 // ===================== Start =====================
 if(!store.get("st_seen_help", false)){ $("helpM").classList.add("open"); store.set("st_seen_help", true); }
