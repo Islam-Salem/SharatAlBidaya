@@ -36,7 +36,7 @@ Making the clips (`tools/make_clips.py`):
 4. Upload the `clips` folder. Do NOT upload `tools/source` (big files, not needed online).
 
 ## Moving to your own domain later
-These files contain the full address `https://islam-salem.github.io/SharatAlBidaya/` —
+These files contain the full address `https://islam-salem.github.io/sharatalbidaya/` —
 replace it with the new address in all of them:
 - `index.html` (canonical + og:url + og:image + twitter:image)
 - `robots.txt`
