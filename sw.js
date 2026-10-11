@@ -1,7 +1,7 @@
 // Service worker — makes the site installable as an app on phones.
 // Strategy: always try the network first (so your updates show up immediately),
 // fall back to the saved copy only when offline.
-const CACHE = "sharah-v3";
+const CACHE = "sharah-v4";
 const SHELL = ["./", "index.html", "songs.js", "about.html", "privacy.html", "page.css",
                "icon-192.png", "icon-512.png", "favicon.ico"];
 
