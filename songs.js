@@ -73,6 +73,10 @@ const SONGS = [
   { title: "سلفستر وتويتي", aliases: ["sylvester", "tweety", "سيلفستر"], youtube: "zjTuPPtvnEE", start: 1 },
   { title: "ساندي بل", aliases: ["sandy bell"], youtube: "0_jO87HBA2E", start: 0 },
   { title: "بينكي وبرين", aliases: ["pinky and the brain", "pinky", "بينكي"], youtube: "3lW5XQsw42c", start: 1 },
+  { title: "أراغاي", aliases: [], youtube: "f6CPO9xWoTw", start: 0 },
+  { title: "سيف النار", aliases: [], youtube: "i_nF5pFlDaY", start: 4 },
+  { title: "أناستازيا", aliases: ["anastasia"], youtube: "SwDBisuEsJg", start: 0 },
+  { title: "المحقق كونان", aliases: ["detective conan", "كونان"], youtube: "CHAqIZ1Yl90", start: 0 },
 ];
 
 // =====================================================================
