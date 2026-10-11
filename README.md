@@ -15,7 +15,7 @@ sw.js                 makes the site installable as an app on phones
 site.webmanifest      app name, colors and icons for "install"
 favicon.ico, favicon-32.png, apple-touch-icon.png,
 icon-192.png, icon-512.png, icon-maskable-512.png   icons
-og-image.png          picture shown when the link is shared (WhatsApp, Facebook…)
+og-image.jpg          picture shown when the link is shared (WhatsApp, Facebook…)
 robots.txt, sitemap.xml   help Google find the pages
 ```
 
