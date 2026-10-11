@@ -443,12 +443,16 @@ function loadYouTube(purpose){
     yt = new YT.Player("yt", {
       host: "https://www.youtube-nocookie.com",   // privacy-enhanced mode
       videoId: YTINFO.id,
-      playerVars: { controls: 1, disablekb: 1, playsinline: 1, rel: 0, iv_load_policy: 3, fs: 0 },
+      playerVars: Object.assign(
+        { controls: 1, disablekb: 1, playsinline: 1, rel: 0, iv_load_policy: 3, fs: 0 },
+        purpose === "game" ? {} : { start: Math.floor(START) }   // reveal/show: open already at the start time
+      ),
       events: {
         onReady: () => {
           if(purpose !== "game"){
             ytReady = true;
-            try{ yt.seekTo(START, true); if(purpose === "reveal") yt.playVideo(); else yt.pauseVideo(); }catch(e){}
+            // "reveal" = just finished the round → play. "show" = page reloaded after finishing → stay paused.
+            if(purpose === "reveal"){ try{ yt.playVideo(); }catch(e){} }
             return;
           }
           // Warm-up: buffer the start point silently so the first ▶ responds fast
