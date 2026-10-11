@@ -1,6 +1,6 @@
-# شارة البداية — Spacetoon Songless
+# شارة البداية
 
-Daily "name the intro from the first second" game for Spacetoon cartoon intros.
+Daily "name the intro from the first second" game for TV-show intro songs.
 Clips unlock at 1 → 2 → 4 → 6 → 8 seconds (5 tries). Wrong guess or skip = longer clip.
 
 ## Files
