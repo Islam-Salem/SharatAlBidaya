@@ -55,7 +55,7 @@ const SONGS = [
   { title: "جرندايزر", aliases: ["grendizer", "غرندايزر", "جريندايزر"], youtube: "4KIk8h9xNL8", start: 0 },
   { title: "حكايات ما أحلاها", aliases: [], youtube: "9AmDta7HtmU", start: 1 },
   { title: "أبناء الوطن", aliases: [], youtube: "gISu_-igKsI", start: 1 },
-  { title: "بوكيمون", aliases: ["pokemon"], youtube: "MCU3Bya2v9A", start: 0 },
+  { title: "بوكيمون", aliases: ["pokemon"], youtube: "MCU3Bya2v9A", start: 1 },
   { title: "أسرار المحيط", aliases: [], youtube: "a259sXecaRQ", start: 0 },
   { title: "السيف القاطع", aliases: ["سبيس باور"], youtube: "QsqyVxYmvf4", start: 18 },
   { title: "همتارو", aliases: ["hamtaro", "هامتارو"], youtube: "eeOlXP63S1g", start: 0 },
