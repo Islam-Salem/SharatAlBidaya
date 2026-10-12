@@ -1,7 +1,7 @@
 // Service worker — makes the site installable as an app on phones.
 // Strategy: always try the network first (so your updates show up immediately),
 // fall back to the saved copy only when offline.
-const CACHE = "sharah-v6";
+const CACHE = "sharah-v7";
 const SHELL = ["./", "index.html", "songs.js", "about.html", "privacy.html", "page.css",
                "icon-192.png", "icon-512.png", "favicon.ico"];
 
@@ -16,7 +16,7 @@ self.addEventListener("install", e => {
 self.addEventListener("activate", e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.startsWith("sharah-") && k !== CACHE).map(k => caches.delete(k))))   // only this game's old caches: other games share this address
       .then(() => self.clients.claim())
   );
 });
