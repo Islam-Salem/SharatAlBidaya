@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>شارة البداية — خمّن الشارة من أول ثانية</title>
+<title>شارة الطفولة — خمّن الشارة من أول ثانية</title>
 <meta name="description" content="كم ثانية تحتاج لتعرف الشارة؟ لعبة يومية مجانية: اسمع أول ثانية من الشارة وخمّن المسلسل. شارة جديدة كل يوم.">
 <link rel="canonical" href="https://islam-salem.github.io/sharatalbidaya/">
 
@@ -13,23 +13,23 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#7cc6fe">
-<meta name="apple-mobile-web-app-title" content="شارة البداية">
+<meta name="apple-mobile-web-app-title" content="شارة الطفولة">
 
 <!-- Link previews (WhatsApp, Facebook, X…). Image links must be full addresses — update when you move to your own domain -->
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="شارة البداية">
+<meta property="og:site_name" content="شارة الطفولة">
 <meta property="og:locale" content="ar_AR">
-<meta property="og:title" content="شارة البداية — كم ثانية تحتاج لتعرف الشارة؟">
+<meta property="og:title" content="شارة الطفولة — كم ثانية تحتاج لتعرف الشارة؟">
 <meta property="og:description" content="اسمع أول ثانية من الشارة وخمّن المسلسل. شارة جديدة كل يوم.">
 <meta property="og:url" content="https://islam-salem.github.io/sharatalbidaya/">
-<meta property="og:image" content="https://islam-salem.github.io/sharatalbidaya/og-image.jpg?v=5">
+<meta property="og:image" content="https://islam-salem.github.io/sharatalbidaya/og-image.jpg?v=6">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="1200">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="شارة البداية — كم ثانية تحتاج لتعرف الشارة؟">
+<meta name="twitter:title" content="شارة الطفولة — كم ثانية تحتاج لتعرف الشارة؟">
 <meta name="twitter:description" content="اسمع أول ثانية من الشارة وخمّن المسلسل. شارة جديدة كل يوم.">
-<meta name="twitter:image" content="https://islam-salem.github.io/sharatalbidaya/og-image.jpg?v=5">
+<meta name="twitter:image" content="https://islam-salem.github.io/sharatalbidaya/og-image.jpg?v=6">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
@@ -191,7 +191,7 @@
   <header>
     <button class="iconbtn press" id="helpBtn" aria-label="طريقة اللعب">؟</button>
     <div class="brand">
-      <h1><span>شارة</span> البداية</h1>
+      <h1><span>شارة</span> الطفولة</h1>
       <div class="tag" id="dayLbl"></div>
     </div>
     <button class="iconbtn press" id="statsBtn" aria-label="الإحصائيات">
@@ -251,7 +251,7 @@
   <!-- Install as app (shown only on phones that can install) -->
   <div class="install" id="installBox">
     <img src="icon-192.png" alt="">
-    <div class="t">ثبّت «شارة البداية» على موبايلك<small>تفتحها كتطبيق بضغطة واحدة كل يوم</small></div>
+    <div class="t">ثبّت «شارة الطفولة» على موبايلك<small>تفتحها كتطبيق بضغطة واحدة كل يوم</small></div>
     <button class="go press" id="installBtn">تثبيت</button>
     <button class="x" id="installX" aria-label="إغلاق">×</button>
   </div>
@@ -295,7 +295,7 @@ const START_DATE = "2026-10-10";               // day #1 (Cairo date)
 const CLIPS = [1, 2, 4, 6, 8];                 // seconds unlocked per attempt
 const FULL_LEN = 20;                           // seconds played after the game ends (audio-file songs)
 const SHUFFLE_SEED = 7;                        // change once to re-shuffle (before launch only)
-const GAME_NAME = "شارة البداية";
+const GAME_NAME = "شارة الطفولة";
 const SITE_URL = location.origin + location.pathname;
 const MAX = CLIPS.length;
 
@@ -593,7 +593,7 @@ function updateNext(){
   $("nextLbl").textContent = `الشارة الجاية بعد ${h} ساعة و ${m} دقيقة`;
 }
 function render(){
-  $("dayLbl").textContent = TEST_MODE ? `🔧 تجربة · شارة ${TEST} · تبدأ من ${START} ث` : `شارة اليوم #${DAY}`;
+  $("dayLbl").textContent = TEST_MODE ? `🔧 تجربة · شارة ${TEST} · تبدأ من ${START} ث` : `الحلقة #${DAY}`;
   renderRows(); renderBar(); renderStatus();
   if(state.done) renderResult();
 }
